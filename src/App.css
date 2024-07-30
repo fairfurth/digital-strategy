@@ -1,38 +1,32 @@
-.App {
-  text-align: center;
+.app {
+  font-family: Arial, sans-serif;
+  padding: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.digital-strategy .row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
 }
 
-.App-link {
-  color: #61dafb;
+.digital-strategy .phases {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.digital-strategy .vision,
+.digital-strategy .current-state,
+.digital-strategy .initiatives,
+.digital-strategy .future-state,
+.digital-strategy .principles,
+.digital-strategy .measures,
+.digital-strategy .phase {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  flex: 1;
+}
+
+.digital-strategy .vision {
+  margin-bottom: 20px;
 }
