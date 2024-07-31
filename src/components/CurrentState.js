@@ -20,7 +20,8 @@ const CurrentState = () => {
                 </div>
                 <div className="text-xs text-gray-600 dark:text-gray-200">
                     Good
-                </div>
+                          </div>
+
             </div>
         </li>
         <li className="flex flex-row">
