@@ -46,7 +46,7 @@ const strategySchema = new mongoose.Schema({
   title:  String,
   startDate:  Date,
   endDate:  Date,
-  straregyId:  Number,
+  strategyId:  Number,
   currentState: [{
     currentItemId:  Number,
     currentItemName:  String,
@@ -151,6 +151,19 @@ app.post('/api/strategy', async (req, res) => {
   } catch (err) {
     res.status(400).send(err);
     console.log(err)
+  }
+});
+
+app.get('/api/strategy', async (req, res) => {
+  try {
+    console.log("Getting Strategy for ", req.query.strategyId);
+    const query = {};
+    query.strategyId = Number(req.query.strategyId);
+    const strategy = await Strategy.find(query);
+    res.status(200).send(strategy);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
   }
 });
 
