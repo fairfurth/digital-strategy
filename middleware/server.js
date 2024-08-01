@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 mongoose.connect('mongodb+srv://malcolmpaul:AyKXPXc1fx7KliQo@digistrat.nqngpt9.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const customerSchema = new mongoose.Schema({
+  customerId: Number,
   name: String,
   email: String,
   phone: String,
@@ -27,7 +28,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   phone: String,
   lastLoggedIn: String,
-  customerId: Number
+  customerId: Number,
+  userId: Number
 });
 
 const planSchema = new mongoose.Schema({
@@ -87,8 +89,10 @@ app.post('/api/customers', async (req, res) => {
 // GET route to retrieve all customers
 app.get('/api/customers', async (req, res) => {
   try {
-    console.log("Getting Customers")
-    const customers = await Customer.find();
+    console.log("Getting Customers", req.query.customerId);
+    const query = {};
+    query.customerId = Number(req.query.customerId);
+    const customers = await Customer.find(query);
     res.status(200).send(customers);
   } catch (err) {
     console.error('Error retrieving customer data:', err);
@@ -110,8 +114,11 @@ app.post('/api/users', async (req, res) => {
 // GET route to retrieve all users
 app.get('/api/users', async (req, res) => {
   try {
-    console.log("Getting Users")
-    const users = await User.find();
+    console.log("Getting Users", req.query.customerId, req.query.userId);
+    const query = {};
+    query.customerId = Number(req.query.customerId);
+    query.userId = Number(req.query.userId);
+    const users = await User.find(query);
     res.status(200).send(users);
   } catch (err) {
     console.error('Error retrieving customer data:', err);
@@ -133,8 +140,10 @@ app.post('/api/plans', async (req, res) => {
 // GET route to retrieve all plans
 app.get('/api/plans', async (req, res) => {
   try {
-    console.log("Getting Plans")
-    const plans = await Plan.find();
+    console.log("Getting Plans", req.query.planId);
+    const query = {};
+    query.planId = Number(req.query.planId);
+    const plans = await Plan.find(query);
     res.status(200).send(plans);
   } catch (err) {
     console.error('Error retrieving customer data:', err);
