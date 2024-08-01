@@ -45,34 +45,63 @@ const planSchema = new mongoose.Schema({
 
 const strategySchema = new mongoose.Schema({
   customerId: Number,
-  title:  String,
-  startDate:  Date,
-  endDate:  Date,
-  strategyId:  Number,
+  title: String,
+  startDate: Date,
+  endDate: Date,
+  strategyId: Number,
+  visionText: String,
   currentState: [{
-    currentItemId:  Number,
-    currentItemName:  String,
-    currentItemDescription:  String,
-    currentItemState:  String
+    currentItemId: Number,
+    currentItemName: String,
+    currentItemDescription: String,
+    currentItemState: String
   }],
   futureState: [{
-    futureItemId:  Number,
-    futureItemName:  String,
-    futureItemDescription:  String,
-    futureItemGoal:  String
+    futureItemId: Number,
+    futureItemName: String,
+    futureItemDescription: String,
+    futureItemGoal: String
   }],
   initiatives: [{
-    initiativeId:  String,
-    initiativeName:  String,
-    initiativeDescription:  String,
-    initiativePurpose:  String
+    initiativeId: String,
+    initiativeName: String,
+    initiativeDescription: String,
+    initiativePurpose: String
   }]
+});
+
+const currentStateSchema = new mongoose.Schema({
+  strategyId: Number,
+  currentItemId: Number,
+  currentItemName: String,
+  currentItemDescription: String,
+  currentItemState: String
+});
+
+const futureStateSchema = new mongoose.Schema({
+  strategyId: Number,
+  futureItemId: Number,
+  futureItemName: String,
+  futureItemDescription: String,
+  futureItemState: String
+});
+
+const initiativesSchema = new mongoose.Schema({
+  strategyId: Number,
+  initiativeId: Number,
+  initiativeName: String,
+  initiatveDescription: String,
+  initiativePurpose: String
 })
+
 
 const Customer = mongoose.model('Customer', customerSchema);
 const User = mongoose.model('Users', userSchema);
 const Plan = mongoose.model('Plan', planSchema);
 const Strategy = mongoose.model('Strategy', strategySchema);
+const CurrentState = mongoose.model('CurrentState', currentStateSchema);
+const FutureState = mongoose.model('FutureState', futureStateSchema);
+const Initiatives = mongoose.model('Initiatives', initiativesSchema);
 
 // Routes
 app.post('/api/customers', async (req, res) => {
@@ -173,6 +202,81 @@ app.get('/api/strategy', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving customer data:', err);
     res.status(500).send(err);
+  }
+});
+
+app.post('/api/currentstate', async (req, res) => {
+  console.log('Post requested for current state')
+  const currentstate = new CurrentState(req.body);
+  try {
+    await currentstate.save();
+    res.status(201).send(currentstate);
+  } catch (err) {
+    res.status(400).send(err);
+    console.log(err)
+  }
+});
+
+app.get('/api/currentstate', async (req, res) => {
+  try {
+    console.log("Getting Current State for ", req.query.strategyId);
+    const query = {};
+    query.strategyId = Number(req.query.strategyId);
+    const currentstate = await CurrentState.find(query);
+    res.status(200).send(currentstate);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
+  }
+});
+
+app.get('/api/futurestate', async (req, res) => {
+  try {
+    console.log("Getting Future State for ", req.query.strategyId);
+    const query = {};
+    query.strategyId = Number(req.query.strategyId);
+    const futurestate = await FutureState.find(query);
+    res.status(200).send(futurestate);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
+  }
+});
+
+app.post('/api/futurestate', async (req, res) => {
+  console.log('Post requested for future state')
+  const futurestate = new FutureState(req.body);
+  try {
+    await futurestate.save();
+    res.status(201).send(futurestate);
+  } catch (err) {
+    res.status(400).send(err);
+    console.log(err)
+  }
+});
+
+app.get('/api/initiative', async (req, res) => {
+  try {
+    console.log("Getting Initiative for ", req.query.strategyId);
+    const query = {};
+    query.strategyId = Number(req.query.strategyId);
+    const initiative = await Initiatives.find(query);
+    res.status(200).send(initiative);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
+  }
+});
+
+app.post('/api/initiative', async (req, res) => {
+  console.log('Post requested for future state')
+  const initiative = new Initiatives(req.body);
+  try {
+    await initiative.save();
+    res.status(201).send(initiative);
+  } catch (err) {
+    res.status(400).send(err);
+    console.log(err)
   }
 });
 
