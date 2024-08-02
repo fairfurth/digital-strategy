@@ -6,6 +6,8 @@ import FutureState from './FutureState';
 import Phase from './Phase';
 import Principles from './Principles';
 import Measures from './Measures';
+import UserGraph from './Graph.js';
+import LineTest from './LineTest.js';
 
 const DigitalStrategy = () => {
   return (
@@ -24,6 +26,8 @@ const DigitalStrategy = () => {
       </div>
       <Principles />
       <Measures />
+      <LineTest />
+      <UserGraph />
     </div>
   );
 };

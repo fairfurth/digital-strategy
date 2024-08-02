@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   email: String,
   phone: String,
+  age: Number,
   lastLoggedIn: String,
   customerId: Number,
   userId: Number
@@ -140,13 +141,28 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-// GET route to retrieve all users
+// GET route to retrieve one users
 app.get('/api/users', async (req, res) => {
   try {
     console.log("Getting Users", req.query.customerId, req.query.userId);
     const query = {};
     query.customerId = Number(req.query.customerId);
     query.userId = Number(req.query.userId);
+    const users = await User.find(query);
+    res.status(200).send(users);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
+  }
+});
+
+// GET route to retrieve all users for reporting
+app.get('/report/users', async (req, res) => {
+  try {
+    console.log("Getting Users for Reporting", req.query.customerId);
+    const query = {};
+    query.customerId = Number(req.query.customerId);
+
     const users = await User.find(query);
     res.status(200).send(users);
   } catch (err) {
