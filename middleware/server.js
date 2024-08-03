@@ -10,7 +10,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://malcolmpaul:AyKXPXc1fx7KliQo@digistrat.nqngpt9.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoURI = 'mongodb+srv://malcolmpaul:AyKXPXc1fx7KliQo@digistrat.nqngpt9.mongodb.net/';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
+
 
 const customerSchema = new mongoose.Schema({
   customerId: Number,
@@ -293,6 +300,44 @@ app.post('/api/initiative', async (req, res) => {
   } catch (err) {
     res.status(400).send(err);
     console.log(err)
+  }
+});
+
+// GET route to retrieve user data grouped by customers
+app.get('/report/users-by-customer', async (req, res) => {
+  try {
+    const customerId = req.query.customerId;
+    console.log('CustomerId: ',customerId)
+    const userData = await User.aggregate([
+      {
+        "$group": {
+          "_id": "$customerId",
+          "count": { "$sum": 1 }
+        }
+      },
+      {
+        "$lookup": {
+          "from": "customers",
+          "localField": "_id",
+          "foreignField": "customerId",
+          "as": "customer_info"
+        }
+      },
+      {
+        "$unwind": "$customer_info"
+      },
+      {
+        "$project": {
+          "_id": 0,
+          "customerName": "$customer_info.name",
+          "userCount": "$count"
+        }
+      }
+    ]);
+    res.status(200).send(userData);
+  } catch (err) {
+    console.error('Error retrieving user data for graph:', err);
+    res.status(500).send(err);
   }
 });
 
