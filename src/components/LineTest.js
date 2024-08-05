@@ -21,7 +21,8 @@ borderColor: "rgb(123, 50, 100)",
 data: [10, 5, 15, 20, 2, 15, 30],
 },
 ],
-};
+}
+    ;
 return (
 <div>
 <Bar data={data} />

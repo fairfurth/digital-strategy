@@ -100,7 +100,15 @@ const initiativesSchema = new mongoose.Schema({
   initiativeName: String,
   initiatveDescription: String,
   initiativePurpose: String
-})
+});
+
+const caseSchema = new mongoose.Schema({
+  customerId: Number,
+  caseId: Number,
+  caseName: String,
+  caseDescription: String,
+  caseCreateDate: String
+});
 
 
 const Customer = mongoose.model('Customer', customerSchema);
@@ -110,6 +118,7 @@ const Strategy = mongoose.model('Strategy', strategySchema);
 const CurrentState = mongoose.model('CurrentState', currentStateSchema);
 const FutureState = mongoose.model('FutureState', futureStateSchema);
 const Initiatives = mongoose.model('Initiatives', initiativesSchema);
+const Case = mongoose.model('Case', caseSchema);
 
 // Routes
 app.post('/api/customers', async (req, res) => {
@@ -338,6 +347,54 @@ app.get('/report/users-by-customer', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving user data for graph:', err);
     res.status(500).send(err);
+  }
+});
+
+app.get('/api/case', async (req, res) => {
+  try {
+    console.log("Getting Case for ", req.query.customerId);
+    const query = {};
+    query.customerId = Number(req.query.customerId);
+    const cases = await Case.aggregate
+      ([
+  {
+    $match: {
+      customerId: query.customerId
+    }
+  },
+  {
+    $group: {
+      _id: {
+        $substr: ["$caseCreateDate", 3, 2]
+      },
+      count: {
+        $sum: 1
+      }
+    }
+  },
+  {
+    $sort: {
+      _id: 1
+    }
+  }
+]);
+
+    res.status(200).send(cases);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
+  }
+});
+
+app.post('/api/case', async (req, res) => {
+  console.log('Post requested for case')
+  const cases = new Case(req.body);
+  try {
+    await cases.save();
+    res.status(201).send(cases);
+  } catch (err) {
+    res.status(400).send(err);
+    console.log(err)
   }
 });
 

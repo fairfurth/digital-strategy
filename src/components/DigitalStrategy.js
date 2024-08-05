@@ -6,8 +6,8 @@ import FutureState from './FutureState';
 import Phase from './Phase';
 import Principles from './Principles';
 import Measures from './Measures';
-import UserGraph from './Graph.js';
-import LineTest from './LineTest.js';
+import UserGraph from './UserGraph.js';
+import CaseGraph from './CaseGraph.js';
 
 const DigitalStrategy = () => {
   return (
@@ -26,8 +26,8 @@ const DigitalStrategy = () => {
       </div>
       <Principles />
       <Measures />
-      <LineTest />
-      <UserGraph />
+
+      <CaseGraph />
     </div>
   );
 };
