@@ -110,6 +110,11 @@ const caseSchema = new mongoose.Schema({
   caseCreateDate: String
 });
 
+const metaIds = new mongoose.Schema({
+  nextItemId: Number,
+  nextStrategyId: Number
+})
+
 
 const Customer = mongoose.model('Customer', customerSchema);
 const User = mongoose.model('Users', userSchema);
@@ -119,6 +124,9 @@ const CurrentState = mongoose.model('CurrentState', currentStateSchema);
 const FutureState = mongoose.model('FutureState', futureStateSchema);
 const Initiatives = mongoose.model('Initiatives', initiativesSchema);
 const Case = mongoose.model('Case', caseSchema);
+const MetaId = mongoose.model('MetaId', metaIds);
+
+function hello() { console.log("hello") };
 
 // Routes
 app.post('/api/customers', async (req, res) => {
@@ -135,6 +143,7 @@ app.post('/api/customers', async (req, res) => {
 // GET route to retrieve all customers
 app.get('/api/customers', async (req, res) => {
   try {
+    hello();
     console.log("Getting Customers", req.query.customerId);
     const query = {};
     query.customerId = Number(req.query.customerId);
@@ -357,27 +366,27 @@ app.get('/api/case', async (req, res) => {
     query.customerId = Number(req.query.customerId);
     const cases = await Case.aggregate
       ([
-  {
-    $match: {
-      customerId: query.customerId
-    }
-  },
-  {
-    $group: {
-      _id: {
-        $substr: ["$caseCreateDate", 3, 2]
-      },
-      count: {
-        $sum: 1
-      }
-    }
-  },
-  {
-    $sort: {
-      _id: 1
-    }
-  }
-]);
+        {
+          $match: {
+            customerId: query.customerId
+          }
+        },
+        {
+          $group: {
+            _id: {
+              $substr: ["$caseCreateDate", 3, 2]
+            },
+            count: {
+              $sum: 1
+            }
+          }
+        },
+        {
+          $sort: {
+            _id: 1
+          }
+        }
+      ]);
 
     res.status(200).send(cases);
   } catch (err) {
@@ -395,6 +404,20 @@ app.post('/api/case', async (req, res) => {
   } catch (err) {
     res.status(400).send(err);
     console.log(err)
+  }
+});
+
+app.get('/api/identifier', async (req, res) => {
+  try {
+    console.log("Getting next Id for ", req.query.nextItemId);
+    const query = {};
+    query.nextItemId = Number(req.query.nextItemId);
+    const nextId = await MetaId.find(query);
+    console.log(query.nextItemId)
+    res.status(200).send(nextId);
+  } catch (err) {
+    console.error('Error retrieving customer data:', err);
+    res.status(500).send(err);
   }
 });
 
